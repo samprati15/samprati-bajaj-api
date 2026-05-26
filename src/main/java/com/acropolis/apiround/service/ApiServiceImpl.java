@@ -16,8 +16,8 @@ public class ApiServiceImpl implements ApiService {
 
     @Override
     public ApiResponse processData(ApiRequest request) {
-        List<Integer> evenNumbers = new ArrayList<>();
-        List<Integer> oddNumbers = new ArrayList<>();
+        List<String> evenNumbers = new ArrayList<>();
+        List<String> oddNumbers = new ArrayList<>();
         List<String> alphabets = new ArrayList<>();
         List<String> specialCharacters = new ArrayList<>();
         int sumOfNumbers = 0;
@@ -40,10 +40,11 @@ public class ApiServiceImpl implements ApiService {
                 }
 
                 if (isNumber) {
+                    // Return numbers as strings per spec
                     if (num % 2 == 0) {
-                        evenNumbers.add(num);
+                        evenNumbers.add(str.trim());
                     } else {
-                        oddNumbers.add(num);
+                        oddNumbers.add(str.trim());
                     }
                     sumOfNumbers += num;
                 } else {
@@ -65,7 +66,7 @@ public class ApiServiceImpl implements ApiService {
             }
         }
 
-        // Process the reversed alternating caps string
+        // Process the reversed alternating caps string (concat_string)
         String reversed = allLetters.reverse().toString();
         StringBuilder altCaps = new StringBuilder();
         for (int i = 0; i < reversed.length(); i++) {
@@ -82,13 +83,12 @@ public class ApiServiceImpl implements ApiService {
         response.setUser_id(USER_ID);
         response.setEmail(EMAIL);
         response.setRoll_number(ROLL_NUMBER);
-        response.setCollege_roll_number(ROLL_NUMBER);
         response.setEven_numbers(evenNumbers);
         response.setOdd_numbers(oddNumbers);
         response.setAlphabets(alphabets);
         response.setSpecial_characters(specialCharacters);
-        response.setSum_of_numbers(sumOfNumbers);
-        response.setReversed_alternating_caps(altCaps.toString());
+        response.setSum(String.valueOf(sumOfNumbers));
+        response.setConcat_string(altCaps.toString());
 
         return response;
     }

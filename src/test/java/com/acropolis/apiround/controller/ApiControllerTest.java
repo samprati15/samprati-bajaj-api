@@ -35,9 +35,10 @@ public class ApiControllerTest {
                 .andExpect(jsonPath("$.operation_code", is(1)));
     }
 
+    // Example A from spec
     @Test
-    public void testPostWithMixedData() throws Exception {
-        ApiRequest request = new ApiRequest(Arrays.asList("a", "1", "3", "b", "@", "4"));
+    public void testExampleA() throws Exception {
+        ApiRequest request = new ApiRequest(Arrays.asList("a", "1", "334", "4", "R", "$"));
 
         mockMvc.perform(post("/bfhl")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -47,47 +48,48 @@ public class ApiControllerTest {
                 .andExpect(jsonPath("$.user_id", is("samprati_sawala_15102005")))
                 .andExpect(jsonPath("$.email", is("sampratisawala230058@acropolis.in")))
                 .andExpect(jsonPath("$.roll_number", is("0827CY231061")))
-                .andExpect(jsonPath("$.college_roll_number", is("0827CY231061")))
-                .andExpect(jsonPath("$.even_numbers", contains(4)))
-                .andExpect(jsonPath("$.odd_numbers", containsInAnyOrder(1, 3)))
-                .andExpect(jsonPath("$.alphabets", containsInAnyOrder("A", "B")))
-                .andExpect(jsonPath("$.special_characters", contains("@")))
-                .andExpect(jsonPath("$.sum_of_numbers", is(8)))
-                // reversed letters: b, a -> alternating caps: Ba
-                .andExpect(jsonPath("$.reversed_alternating_caps", is("Ba")));
+                .andExpect(jsonPath("$.odd_numbers", contains("1")))
+                .andExpect(jsonPath("$.even_numbers", containsInAnyOrder("334", "4")))
+                .andExpect(jsonPath("$.alphabets", containsInAnyOrder("A", "R")))
+                .andExpect(jsonPath("$.special_characters", contains("$")))
+                .andExpect(jsonPath("$.sum", is("339")))
+                .andExpect(jsonPath("$.concat_string", is("Ra")));
     }
 
+    // Example B from spec
     @Test
-    public void testPostWithNumbersOnly() throws Exception {
-        ApiRequest request = new ApiRequest(Arrays.asList("2", "7", "10", "15"));
+    public void testExampleB() throws Exception {
+        ApiRequest request = new ApiRequest(Arrays.asList("2", "a", "y", "4", "&", "-", "*", "5", "92", "b"));
 
         mockMvc.perform(post("/bfhl")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.is_success", is(true)))
-                .andExpect(jsonPath("$.even_numbers", containsInAnyOrder(2, 10)))
-                .andExpect(jsonPath("$.odd_numbers", containsInAnyOrder(7, 15)))
-                .andExpect(jsonPath("$.alphabets", is(empty())))
-                .andExpect(jsonPath("$.sum_of_numbers", is(34)))
-                .andExpect(jsonPath("$.reversed_alternating_caps", is("")));
+                .andExpect(jsonPath("$.odd_numbers", contains("5")))
+                .andExpect(jsonPath("$.even_numbers", containsInAnyOrder("2", "4", "92")))
+                .andExpect(jsonPath("$.alphabets", containsInAnyOrder("A", "Y", "B")))
+                .andExpect(jsonPath("$.special_characters", containsInAnyOrder("&", "-", "*")))
+                .andExpect(jsonPath("$.sum", is("103")))
+                .andExpect(jsonPath("$.concat_string", is("ByA")));
     }
 
+    // Example C from spec
     @Test
-    public void testPostWithAlphabetsOnly() throws Exception {
-        ApiRequest request = new ApiRequest(Arrays.asList("x", "y", "z"));
+    public void testExampleC() throws Exception {
+        ApiRequest request = new ApiRequest(Arrays.asList("A", "ABCD", "DOE"));
 
         mockMvc.perform(post("/bfhl")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.is_success", is(true)))
-                .andExpect(jsonPath("$.even_numbers", is(empty())))
                 .andExpect(jsonPath("$.odd_numbers", is(empty())))
-                .andExpect(jsonPath("$.alphabets", containsInAnyOrder("X", "Y", "Z")))
-                .andExpect(jsonPath("$.sum_of_numbers", is(0)))
-                // reversed letters: z, y, x -> alternating caps: ZyX
-                .andExpect(jsonPath("$.reversed_alternating_caps", is("ZyX")));
+                .andExpect(jsonPath("$.even_numbers", is(empty())))
+                .andExpect(jsonPath("$.alphabets", containsInAnyOrder("A", "ABCD", "DOE")))
+                .andExpect(jsonPath("$.special_characters", is(empty())))
+                .andExpect(jsonPath("$.sum", is("0")))
+                .andExpect(jsonPath("$.concat_string", is("EoDdCbAa")));
     }
 
     @Test
@@ -102,7 +104,7 @@ public class ApiControllerTest {
                 .andExpect(jsonPath("$.even_numbers", is(empty())))
                 .andExpect(jsonPath("$.odd_numbers", is(empty())))
                 .andExpect(jsonPath("$.alphabets", is(empty())))
-                .andExpect(jsonPath("$.sum_of_numbers", is(0)))
-                .andExpect(jsonPath("$.reversed_alternating_caps", is("")));
+                .andExpect(jsonPath("$.sum", is("0")))
+                .andExpect(jsonPath("$.concat_string", is("")));
     }
 }

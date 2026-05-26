@@ -7,15 +7,18 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 
+// implementation of the service interface for processing the bfhl data
 @Service
 public class ApiServiceImpl implements ApiService {
 
+    // my details for the response
     private static final String USER_ID = "samprati_sawala_15102005";
     private static final String EMAIL = "sampratisawala230058@acropolis.in";
     private static final String ROLL_NUMBER = "0827CY231061";
 
     @Override
     public ApiResponse processData(ApiRequest request) {
+        // lists to store separated data
         List<String> evenNumbers = new ArrayList<>();
         List<String> oddNumbers = new ArrayList<>();
         List<String> alphabets = new ArrayList<>();
@@ -29,18 +32,18 @@ public class ApiServiceImpl implements ApiService {
                     continue;
                 }
 
-                // Check if the entire string can be parsed as an integer
+                // try to parse as integer
                 boolean isNumber = false;
                 int num = 0;
                 try {
                     num = Integer.parseInt(str.trim());
                     isNumber = true;
                 } catch (NumberFormatException e) {
-                    // Not a standard integer
+                    // not a number, check other types
                 }
 
                 if (isNumber) {
-                    // Return numbers as strings per spec
+                    // separate even and odd, keep as string
                     if (num % 2 == 0) {
                         evenNumbers.add(str.trim());
                     } else {
@@ -48,15 +51,16 @@ public class ApiServiceImpl implements ApiService {
                     }
                     sumOfNumbers += num;
                 } else {
-                    // Check if it consists only of alphabetic characters
+                    // check if the whole string is alphabetic
                     boolean isAlphabetic = !str.isEmpty() && str.chars().allMatch(Character::isLetter);
                     if (isAlphabetic) {
                         alphabets.add(str.toUpperCase());
                     } else {
+                        // anything else goes to special characters
                         specialCharacters.add(str);
                     }
 
-                    // Extract any alphabetical characters present in this string for the concatenated string
+                    // extract individual letters for concat_string
                     for (char ch : str.toCharArray()) {
                         if (Character.isLetter(ch)) {
                             allLetters.append(ch);
@@ -66,7 +70,7 @@ public class ApiServiceImpl implements ApiService {
             }
         }
 
-        // Process the reversed alternating caps string (concat_string)
+        // reverse the letters and apply alternating caps (uppercase at even index, lowercase at odd)
         String reversed = allLetters.reverse().toString();
         StringBuilder altCaps = new StringBuilder();
         for (int i = 0; i < reversed.length(); i++) {
@@ -78,6 +82,7 @@ public class ApiServiceImpl implements ApiService {
             }
         }
 
+        // build the response object
         ApiResponse response = new ApiResponse();
         response.setIs_success(true);
         response.setUser_id(USER_ID);

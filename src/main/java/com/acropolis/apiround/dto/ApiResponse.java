@@ -2,22 +2,23 @@ package com.acropolis.apiround.dto;
 
 import java.util.List;
 
+// response DTO - contains all the fields required by the bfhl api spec
 public class ApiResponse {
     private boolean is_success;
     private String user_id;
     private String email;
     private String roll_number;
-    private List<String> even_numbers;
-    private List<String> odd_numbers;
-    private List<String> alphabets;
-    private List<String> special_characters;
-    private String sum;
-    private String concat_string;
+    private List<String> even_numbers;   // even numbers from input (as strings)
+    private List<String> odd_numbers;    // odd numbers from input (as strings)
+    private List<String> alphabets;      // alphabetic strings converted to uppercase
+    private List<String> special_characters;  // special chars like @, $, etc.
+    private String sum;                  // sum of all numbers (as string)
+    private String concat_string;        // reversed alphabets with alternating caps
 
     public ApiResponse() {
     }
 
-    // Getters and Setters
+    // getters and setters
     public boolean isIs_success() {
         return is_success;
     }
